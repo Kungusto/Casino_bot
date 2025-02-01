@@ -4,8 +4,10 @@ from datetime import datetime
 
 class Users(BaseModel) : 
     id : int
-    tg_id: str
+    tg_id: int
     balance: int
-    registrated: datetime
-    password: str
-    
+    registrated: datetime = datetime.now()
+    last_game: datetime = datetime.now()
+
+class UsersSetBalance(BaseModel) :
+    balance: int

@@ -3,7 +3,7 @@ from datetime import datetime
 
 from src.schemas.users import Users
 
-from databases.database import async_session_maker
+from src.databases.database import async_session_maker
 from src.repositories.user import UsersRepository
 
 # id|tg_id|balance|password|registrated|last_game|
@@ -30,18 +30,15 @@ class Casino :
         }
 
     @staticmethod
-    async def user_is_new(tg_id) :
+    async def new_user(tg_id) :
         async with async_session_maker() as session :
-            query = UsersRepository(session).get_one_or_none(tg_id=tg_id)
-            result = await session.execute(query)
-        
-        model = result.scalars().get_one_or_none()
+            model = await UsersRepository(session).get_one_or_none(tg_id=tg_id)
         
         if model is None :
-            return None
+            return True
         
-        return model
-    
+        return False
+
     def randomize(self) :
         if random.random() > self.base_chance :
             return True 
@@ -103,9 +100,8 @@ class Casino :
         
 class CasinoFactory : 
     @staticmethod
-    def create_base_user(self, user_id_tg, balance=0, base_chance=0.45, jackpot_chance=0.01) : 
+    def create_base_user(self, tg_id, balance=0, base_chance=0.45, jackpot_chance=0.01) : 
         player = Casino(self, balance, base_chance, jackpot_chance, temp_bet=0)
-        Casino.current_sessions[user_id_tg] = player
         return player
     
     @staticmethod

@@ -9,11 +9,10 @@ class UsersOrm(Base) :
     __tablename__ = 'casino_users'
     
     id: Mapped[int] = mapped_column(primary_key=True)
-    tg_id: Mapped[str]
+    tg_id: Mapped[int] = mapped_column(Integer)
     balance: Mapped[int] 
     registrated: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
     last_game: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
-    password: Mapped[str] = mapped_column(String(30))
     
     
     

@@ -7,6 +7,10 @@ class BaseRepository :
     def __init__(self, session) :
         self.session = session
     
+    async def add(self, **data) :
+        add_user_stmt = insert(self.model).values(**data)
+        await self.session.execute(add_user_stmt)
+    
     async def get_all(self) : 
         query = select(self.model)
         
@@ -19,14 +23,14 @@ class BaseRepository :
         
         result = await self.session.execute(query)
         
-        model = result.scalars().get_one_or_none()
+        model = result.scalars().one_or_none()
         
         if model is None :
             return None
         
-        return model
+        return self.schema.model_validate(model, from_attributes=True) 
     
-    async def edit(self, data, is_patch, **filter_by) :
+    async def edit(self, data, is_patch=False, **filter_by) :
         edit_hotel_stmt = (update(self.model).filter_by(**filter_by).
         values(**data.model_dump(exclude_unset=is_patch)))
         await self.session.execute(edit_hotel_stmt)
