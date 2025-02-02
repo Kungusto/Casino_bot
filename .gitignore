@@ -2,4 +2,4 @@ lab.ipynb
 __pycache__
 .venv
 .env
-migrations
+src/migrations
